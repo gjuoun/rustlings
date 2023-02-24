@@ -1,8 +1,6 @@
 // iterators4.rs
 // Execute `rustlings hint iterators4` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
-
 pub fn factorial(num: u64) -> u64 {
     // Complete this function to return the factorial of num
     // Do not use:
@@ -13,6 +11,20 @@ pub fn factorial(num: u64) -> u64 {
     // For an extra challenge, don't use:
     // - recursion
     // Execute `rustlings hint iterators4` for hints.
+
+    //? first try
+    // match num {
+    //     u64::MIN..=1 => 1,
+    //     _ => num * factorial(num - 1),
+    // }
+
+    //? second try
+    let arr = (1..num + 1).collect::<Vec<u64>>();
+    let sum = arr.into_iter().fold(1, |mut acc, x| {
+        acc *= x;
+        acc
+    });
+    sum
 }
 
 #[cfg(test)]
