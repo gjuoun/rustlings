@@ -10,6 +10,7 @@
 //
 // Make the code compile and the tests pass.
 
+
 use std::collections::HashMap;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -62,11 +63,18 @@ fn count_collection_iterator(collection: &[HashMap<String, Progress>], value: Pr
     // collection is a slice of hashmaps.
     // collection = [{ "variables1": Complete, "from_str": None, ... },
     //     { "variables2": Complete, ... }, ... ]
-    let count = collection.into_iter().fold(0, |mut accu, map| {
-        accu += count_iterator(map, value);
-        accu
-    });
-    count
+
+    //* fold is better */
+    // let count = collection.into_iter().fold(0, |mut accu, map| {
+    //     accu += count_iterator(map, value);
+    //     accu
+    // });
+    // count
+
+    collection
+        .iter()
+        .map(|map| count_iterator(map, value))
+        .sum()
 }
 
 #[cfg(test)]

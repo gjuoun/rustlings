@@ -5,7 +5,8 @@
 
 // I AM NOT DONE
 
-use std::sync::Arc;
+// use core::panic;
+use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 
@@ -13,15 +14,20 @@ struct JobStatus {
     jobs_completed: u32,
 }
 
-fn main() {
-    let status = Arc::new(JobStatus { jobs_completed: 0 });
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let status = Arc::new(Mutex::new(JobStatus { jobs_completed: 0 }));
     let mut handles = vec![];
     for _ in 0..10 {
         let status_shared = Arc::clone(&status);
         let handle = thread::spawn(move || {
             thread::sleep(Duration::from_millis(250));
             // TODO: You must take an action before you update a shared value
-            status_shared.jobs_completed += 1;
+            let mut status_inner = match status_shared.lock() {
+                Ok(guard) => guard,
+                Err(e) => panic!("Mutex poisoned: {:?}", e),
+            };
+
+            status_inner.jobs_completed += 1;
         });
         handles.push(handle);
     }
@@ -29,6 +35,11 @@ fn main() {
         handle.join().unwrap();
         // TODO: Print the value of the JobStatus.jobs_completed. Did you notice anything
         // interesting in the output? Do you have to 'join' on all the handles?
-        println!("jobs completed {}", ???);
+        let inner_status = match status.lock() {
+            Ok(guard) => guard,
+            Err(e) => panic!("Mutex poisoned: {:?}", e),
+        };
+        println!("jobs completed {}", inner_status.jobs_completed);
     }
+    Ok(())
 }
