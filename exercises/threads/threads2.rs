@@ -21,7 +21,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             thread::sleep(Duration::from_millis(250));
             // TODO: You must take an action before you update a shared value
             let mut status_inner = match status_shared.lock() {
-                Ok(guard) => guard,
+                Ok(status) => status,
                 Err(e) => panic!("Mutex poisoned: {:?}", e),
             };
 
@@ -34,7 +34,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // TODO: Print the value of the JobStatus.jobs_completed. Did you notice anything
         // interesting in the output? Do you have to 'join' on all the handles?
         let inner_status = match status.lock() {
-            Ok(guard) => guard,
+            Ok(status) => status,
             Err(e) => panic!("Mutex poisoned: {:?}", e),
         };
         println!("jobs completed {}", inner_status.jobs_completed);
