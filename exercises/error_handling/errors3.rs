@@ -7,7 +7,7 @@
 use std::num::ParseIntError;
 
 // fn main() -> Result<(), ParseIntError> {
-fn main() -> Result<(), Box<std::error::Error>> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut tokens = 100;
     let pretend_user_input = "8";
 
